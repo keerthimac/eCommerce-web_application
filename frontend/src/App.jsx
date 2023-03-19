@@ -1,14 +1,18 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import Header from "./components/Header";
+import { Container } from "react-bootstrap";
+import Footer from "./components/Footer";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <div className='App'>
-      <h1>Welcome to __Shop</h1>
-    </div>
+    <>
+      <Header />
+      <main className='py-3'>
+        <Container>
+          <h1>Welcome to __Shop</h1>
+        </Container>
+      </main>
+      <Footer />
+    </>
   );
 }
 
