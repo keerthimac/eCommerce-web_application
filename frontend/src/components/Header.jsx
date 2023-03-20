@@ -1,23 +1,29 @@
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import { LinkContainer } from "react-router-bootstrap";
 
 const Header = () => {
   return (
     <header>
       <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
         <Container>
-          <Navbar.Brand href='/'>__Shop</Navbar.Brand>
+          <LinkContainer to='/'>
+            <Navbar.Brand>__Shop</Navbar.Brand>
+          </LinkContainer>
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
-          <Navbar.Collapse id='basic-navbar-nav' style={{ "flex-grow": 0 }}>
-            <Nav className='me-auto'>
-              <Nav.Link href='/cart'>
-                <i className='fas fa-shopping-cart'></i> Cart
-              </Nav.Link>
-              <Nav.Link href='/login'>
-                <i className='fas fa-user'></i> Sign In
-              </Nav.Link>
+          <Navbar.Collapse id='basic-navbar-nav' className='flexFix'>
+            <Nav className='ml-auto'>
+              <LinkContainer to='/cart'>
+                <Nav.Link>
+                  <i className='fas fa-shopping-cart'></i> Cart
+                </Nav.Link>
+              </LinkContainer>
+              <LinkContainer to='/login'>
+                <Nav.Link href='/login'>
+                  <i className='fas fa-user'></i> Sign In
+                </Nav.Link>
+              </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Container>

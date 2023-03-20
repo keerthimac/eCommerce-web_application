@@ -1,3 +1,12 @@
 main {
   min-height: 80vh;
 }
+
+.flexFix {
+  flex-grow: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+}
