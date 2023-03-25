@@ -20,9 +20,11 @@ const HomeScreen = () => {
     dispatch(getProductList());
   }, [dispatch]);
 
-  if (isSuccess) {
-    dispatch(reset());
-  }
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(reset());
+    }
+  }, [dispatch, isSuccess]);
 
   return (
     <>
