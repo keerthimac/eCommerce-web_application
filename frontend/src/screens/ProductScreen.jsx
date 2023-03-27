@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getProductDetails } from "../features/productSlice";
-import { reset } from "../features/productSlice";
+import { getProductDetails } from "../features/products/productSlice";
+import { reset } from "../features/products/productSlice";
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { reset } from "../features/productSlice";
+import { reset } from "../features/cart/cartSlice";
 import {
   Row,
   Col,
@@ -13,8 +13,8 @@ import {
 } from "react-bootstrap";
 import Message from "../components/Message";
 // import { addToCart, removeFromCart } from '../actions/cartActions'
-import { cartAddItems } from "../features/cartSlice";
-import { cartRemoveItems } from "../features/cartSlice";
+import { cartAddItems } from "../features/cart/cartSlice";
+import { cartRemoveItems } from "../features/cart/cartSlice";
 
 const CartScreen = () => {
   const { id } = useParams();

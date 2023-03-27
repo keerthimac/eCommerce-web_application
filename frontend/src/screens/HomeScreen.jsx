@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getProductList } from "../features/productSlice";
-import { reset } from "../features/productSlice";
+import { getProductList } from "../features/products/productSlice";
+import { reset } from "../features/products/productSlice";
 import axios from "axios";
 import Product from "../components/Product";
 import Loader from "../components/Loader";
@@ -32,7 +32,7 @@ const HomeScreen = () => {
       {isLoading ? (
         <Loader />
       ) : isError ? (
-        <Message variant='danger'>{message}</Message>
+        <Message variant="danger">{message}</Message>
       ) : (
         <Row>
           {products.map((product) => (
