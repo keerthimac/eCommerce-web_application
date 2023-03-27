@@ -1,47 +1,50 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import productService from "./productService";
+import cartService from "./cartService";
+
+const cartItemsFromStorage = localStorage.getItem("cartItems");
 
 const initialState = {
-  cart: [],
+  cartItems: cartItemsFromStorage ? JSON.parse(cartItemsFromStorage) : [],
   isError: false,
   isSuccess: false,
   isLoading: false,
   message: "",
 };
 
-// export const cardAddItem = createAsyncThunk(
-//   "cart/CART_ADD_ITEM",
-//   async (_, thunkAPI) => {
-//     try {
-//       return await productService.listProducts();
-//     } catch (error) {
-//       const message =
-//         (error.response &&
-//           error.response.data &&
-//           error.response.data.message) ||
-//         error.message ||
-//         error.toString();
-//       return thunkAPI.rejectWithValue(message);
-//     }
-//   }
-// );
+export const cartAddItems = createAsyncThunk(
+  "cartItems/CART_ADD_ITEM",
+  async ({ id, qty }, thunkAPI) => {
+    try {
+      return await cartService.addToCart(id, qty);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
-// export const getProductDetails = createAsyncThunk(
-//   "product/PRODUCT_DETAILS",
-//   async (productId, thunkAPI) => {
-//     try {
-//       return await productService.getProduct(productId);
-//     } catch (error) {
-//       const message =
-//         (error.response &&
-//           error.response.data &&
-//           error.response.data.message) ||
-//         error.message ||
-//         error.toString();
-//       return thunkAPI.rejectWithValue(message);
-//     }
-//   }
-// );
+export const cartRemoveItems = createAsyncThunk(
+  "cartItems/CART_REMOVE_ITEM",
+  async (id, thunkAPI) => {
+    try {
+      console.log(id);
+      return id;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 export const cartSlice = createSlice({
   name: "productList",
@@ -53,57 +56,78 @@ export const cartSlice = createSlice({
       state.isSuccess = false;
       state.message = "";
     },
-    cartAddItem: (state, action) => {
-        const item = action.payload;
-        const existItem = state.cart.find((x) => x.product === item.product);
-        if (existItem) {
-            state.cart = state.cart.map((x) =>
-            x.product === existItem.product ? item : x
-            );
-        } else {
-            state.cart = [...state.cart, item];
-        }
-        },
-        cartRemoveItem: (state, action) => {
-        state.cart = state.cart.filter((x) => x.product !== action.payload);
-          },
   },
-//   extraReducers: (builder) => {
-//     //Get Product List
-//     builder.addCase(getProductDetails.pending, (state) => {
-//       state.isLoading = true;
-//     });
-//     builder.addCase(getProductDetails.fulfilled, (state, action) => {
-//       state.isLoading = false;
-//       state.isSuccess = true;
-//       state.message = "Product List Fetched Successfully";
-//       state.product = action.payload;
-//     });
-//     builder.addCase(getProductDetails.rejected, (state, action) => {
-//       state.isLoading = false;
-//       state.isError = true;
-//       state.message = action.payload;
-//     });
+  extraReducers: (builder) => {
+    //Get Product List
+    builder.addCase(cartAddItems.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(cartAddItems.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.message = "Fetched Successfully";
+      const item = action.payload;
+      const existItemIndex = state.cartItems.findIndex(
+        (x) => x.product === item.product
+      );
 
-//     //Get Product List
-//     builder.addCase(getProductList.pending, (state) => {
-//       state.isLoading = true;
-//     });
-//     builder.addCase(getProductList.fulfilled, (state, action) => {
-//       state.isLoading = false;
-//       state.isSuccess = true;
-//       state.message = "Product Details Fetched Successfully";
-//       state.products = action.payload;
-//     });
-//     builder.addCase(getProductList.rejected, (state, action) => {
-//       state.isLoading = false;
-//       state.isError = true;
-//       state.message = action.payload;
-//     });
-//   },
+      if (existItemIndex !== -1) {
+        // If item already exists, update its quantity
+        // state.cartItems[existItemIndex].qty += item.qty;
+        // If want to replace with New order only
+        state.cartItems[existItemIndex] = item;
+      } else {
+        // Otherwise, add the new item to the cart
+        state.cartItems.push(item);
+      }
+      //need to save this item to local storage also
+      localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+    });
+    builder.addCase(cartAddItems.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+    });
+
+    //Remove Cart
+    builder.addCase(cartRemoveItems.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(cartRemoveItems.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.message = "Product Details Fetched Successfully";
+      state.cartItems = state.cartItems.filter(
+        (x) => x.product !== action.payload
+      );
+      //need to remove this item from local storage also
+      localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
+    });
+    builder.addCase(cartRemoveItems.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+    });
+  },
 });
 
 // Action creators are generated for each case reducer function
-export const { reset,cartAddItem } = cartSlice.actions;
+export const { reset, cartAddItem } = cartSlice.actions;
 
 export default cartSlice.reducer;
+
+// const item = action.payload;
+// const existItem = state.cartItems.find((x) => x.product === item.product);
+// if (existItem) {
+//   return {
+//     ...state,
+//     cartItems: state.cartItems.map((x) =>
+//       x.product === existItem.product ? item : x
+//     ),
+//   };
+// } else {
+//   return {
+//     ...state,
+//     cartItems: [...state.cartItems, item],
+//   };
+// }

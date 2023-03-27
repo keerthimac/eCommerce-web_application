@@ -9,7 +9,6 @@ const listProducts = async () => {
 const getProduct = async (productId) => {
   const response = await axios.get(`/api/products/${productId}`);
   const data = await response.data;
-  console.log(data);
   return data;
 };
 
