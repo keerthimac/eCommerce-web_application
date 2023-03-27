@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { register, reset } from "../features/auth/authSlice";
-import Spinner from "../components/Spinner";
+import Loader from "../components/Loader";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -52,69 +52,69 @@ function Register() {
   };
 
   if (isLoading) {
-    return <Spinner />;
+    return <Loader />;
   }
 
   return (
     <>
-      <section className='heading'>
+      <section className="heading">
         <h1>
           <FaUser /> Register
         </h1>
         <p>Please create an account</p>
       </section>
 
-      <section className='form'>
+      <section className="form">
         <form onSubmit={onSubmit}>
-          <div className='form-group'>
+          <div className="form-group">
             <input
-              type='text'
-              className='form-control'
-              id='name'
-              name='name'
+              type="text"
+              className="form-control"
+              id="name"
+              name="name"
               value={name}
               onChange={onChange}
-              placeholder='Enter your name'
+              placeholder="Enter your name"
               required
             />
           </div>
-          <div className='form-group'>
+          <div className="form-group">
             <input
-              type='email'
-              className='form-control'
-              id='email'
-              name='email'
+              type="email"
+              className="form-control"
+              id="email"
+              name="email"
               value={email}
               onChange={onChange}
-              placeholder='Enter your email'
+              placeholder="Enter your email"
               required
             />
           </div>
-          <div className='form-group'>
+          <div className="form-group">
             <input
-              type='password'
-              className='form-control'
-              id='password'
-              name='password'
+              type="password"
+              className="form-control"
+              id="password"
+              name="password"
               value={password}
               onChange={onChange}
-              placeholder='Enter password'
+              placeholder="Enter password"
               required
             />
           </div>
-          <div className='form-group'>
+          <div className="form-group">
             <input
-              type='password'
-              className='form-control'
-              id='confirmPassword'
-              name='confirmPassword'
+              type="password"
+              className="form-control"
+              id="confirmPassword"
+              name="confirmPassword"
               value={confirmPassword}
               onChange={onChange}
-              placeholder='Confirm password'
+              placeholder="Confirm password"
               required
             />
           </div>
-          <button className='btn btn-block'>Submit</button>
+          <button className="btn btn-block">Submit</button>
         </form>
       </section>
     </>

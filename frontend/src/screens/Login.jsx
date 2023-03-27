@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { FaSignInAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { login, reset } from "../features/auth/authSlice";
-import Spinner from "../components/Spinner";
+import Loader from "../components/Loader";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -44,45 +44,45 @@ function Login() {
   };
 
   if (isLoading) {
-    return <Spinner />;
+    return <Loader />;
   }
 
   return (
     <>
-      <section className='heading'>
+      <section className="heading">
         <h1>
           <FaSignInAlt /> Login
         </h1>
         <p>Please log in to get support</p>
       </section>
 
-      <section className='form'>
+      <section className="form">
         <form onSubmit={onSubmit}>
-          <div className='form-group'>
+          <div className="form-group">
             <input
-              type='email'
-              className='form-control'
-              id='email'
-              name='email'
+              type="email"
+              className="form-control"
+              id="email"
+              name="email"
               value={email}
               onChange={onChange}
-              placeholder='Enter your email'
+              placeholder="Enter your email"
               required
             />
           </div>
-          <div className='form-group'>
+          <div className="form-group">
             <input
-              type='password'
-              className='form-control'
-              id='password'
-              name='password'
+              type="password"
+              className="form-control"
+              id="password"
+              name="password"
               value={password}
               onChange={onChange}
-              placeholder='Enter password'
+              placeholder="Enter password"
               required
             />
           </div>
-          <button className='btn btn-block'>Submit</button>
+          <button className="btn btn-block">Submit</button>
         </form>
       </section>
     </>
