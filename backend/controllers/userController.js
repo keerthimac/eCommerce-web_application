@@ -39,6 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      isAdmin: user.isAdmin,
       token: jwtGenerator(user._id),
     });
   } else {
@@ -62,6 +63,7 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      isAdmin: user.isAdmin,
       token: jwtGenerator(user._id),
     });
   } else {
@@ -71,15 +73,42 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 // @desc Get Current user
-// @route /api/users/me
+// @route /api/users/profile
 // @access Private
-const getMe = asyncHandler(async (req, res) => {
+const getUser = asyncHandler(async (req, res) => {
   const user = {
     id: req.user.id,
     email: req.user.email,
     name: req.user.name,
+    isAdmin: req.user.isAdmin,
   };
   res.status(200).json(user);
 });
 
-export { registerUser, loginUser, getMe };
+// @desc Update User Profile
+// @route /api/users/profile
+// @access Private
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      token: jwtGenerator(updatedUser._id),
+    });
+  } else {
+    res.status(404);
+    throw new Error("User Not Found");
+  }
+});
+
+export { registerUser, loginUser, getUser, updateUser };

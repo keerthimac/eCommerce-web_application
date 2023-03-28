@@ -5,6 +5,16 @@ import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { register, reset } from "../features/auth/authSlice";
 import Loader from "../components/Loader";
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  Form,
+} from "react-bootstrap";
+import FormContainer from "../components/FormContainer";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -56,15 +66,65 @@ function Register() {
   }
 
   return (
-    <>
-      <section className="heading">
-        <h1>
-          <FaUser /> Register
-        </h1>
-        <p>Please create an account</p>
-      </section>
+    <FormContainer>
+      <h1>
+        <FaUser /> Register
+      </h1>
+      <p>Please create an account</p>
 
-      <section className="form">
+      <Form onSubmit={onSubmit}>
+        <Form.Group className="mb-3" controlId="formBasicName">
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            type="text"
+            name="name"
+            placeholder="Enter your name"
+            value={name}
+            onChange={onChange}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            type="email"
+            name="email"
+            placeholder="Enter email"
+            value={email}
+            onChange={onChange}
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            name="password"
+            value={password}
+            placeholder="Password"
+            onChange={onChange}
+            required
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            type="password"
+            name="confirmPassword"
+            value={confirmPassword}
+            placeholder="confirm password"
+            onChange={onChange}
+            required
+          />
+        </Form.Group>
+
+        <Button variant="primary" type="submit">
+          Sign In
+        </Button>
+      </Form>
+
+      {/* <section className="form">
         <form onSubmit={onSubmit}>
           <div className="form-group">
             <input
@@ -116,8 +176,8 @@ function Register() {
           </div>
           <button className="btn btn-block">Submit</button>
         </form>
-      </section>
-    </>
+      </section> */}
+    </FormContainer>
   );
 }
 

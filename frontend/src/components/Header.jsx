@@ -1,4 +1,4 @@
-import { Button, Navbar, Nav, Container } from "react-bootstrap";
+import { Button, Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,16 +25,18 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav" className="flexFix">
             <Nav className="ml-auto">
-              {user && <Navbar.Text>Hello! {user.name} </Navbar.Text>}
               <LinkContainer to="/cart">
                 <Nav.Link>
                   <i className="fas fa-shopping-cart"></i> Cart
                 </Nav.Link>
               </LinkContainer>
               {user ? (
-                <Button variant="danger" onClick={onLogout}>
-                  <i className="fas fa-sign-in-alt"></i> Logout
-                </Button>
+                <NavDropdown title={user.name} id="username">
+                  <LinkContainer to="/profile">
+                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                  </LinkContainer>
+                  <NavDropdown.Item onClick={onLogout}>Logout</NavDropdown.Item>
+                </NavDropdown>
               ) : (
                 <LinkContainer to="/login">
                   <Nav.Link href="/login">
