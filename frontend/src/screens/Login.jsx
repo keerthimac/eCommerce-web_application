@@ -32,15 +32,17 @@ function Login() {
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
+  const redirect = location.search ? location.search.split("=")[1] : "/";
+
+  console.log(location.search);
+  console.log(redirect);
 
   useEffect(() => {
-    if (isError) {
-    }
     if (isSuccess || user) {
-      navigate("/");
+      navigate(redirect);
     }
     dispatch(reset());
-  }, [isError, isSuccess, message, user, navigate, dispatch, redirect]);
+  }, [isSuccess, user, navigate, dispatch, redirect]);
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });

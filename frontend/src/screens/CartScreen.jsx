@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
+import {
+  Link,
+  useParams,
+  useLocation,
+  useNavigate,
+  NavLink,
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { reset } from "../features/cart/cartSlice";
 import {
@@ -15,11 +21,14 @@ import Message from "../components/Message";
 // import { addToCart, removeFromCart } from '../actions/cartActions'
 import { cartAddItems } from "../features/cart/cartSlice";
 import { cartRemoveItems } from "../features/cart/cartSlice";
+import { useAuthStatus } from "../hook/useAuthStatus";
 
 const CartScreen = () => {
   const { id } = useParams();
   let location = useLocation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loggedIn } = useAuthStatus();
 
   const qty = location.search ? Number(location.search.split("=")[1]) : 1;
 
@@ -37,7 +46,11 @@ const CartScreen = () => {
   };
 
   const checkoutHandler = () => {
-    console.log("checkout");
+    if (loggedIn) {
+      navigate(`/shipping`);
+    } else {
+      navigate(`/login?redirect=/shipping`);
+    }
   };
 
   return (

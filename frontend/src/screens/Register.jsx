@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
@@ -34,15 +34,15 @@ function Register() {
     (state) => state.auth
   );
 
+  const redirect = location.search ? location.search.split("=")[1] : "/";
+  console.log(redirect);
+
   useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
     if (isSuccess || user) {
-      navigate("/");
+      navigate(redirect);
     }
     dispatch(reset()); // Dispatch use for bring functions from auth slice
-  }, [isError, isSuccess, message, user, navigate, dispatch]);
+  }, [isSuccess, message, user, navigate, dispatch]);
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
