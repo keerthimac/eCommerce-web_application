@@ -1,14 +1,25 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import cartService from "./cartService";
 
-const cartItemsFromStorage = localStorage.getItem("cartItems");
+const cartItemsFromStorage = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
+  : [];
+const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
+  ? JSON.parse(localStorage.getItem("shippingAddress"))
+  : {};
 
 const initialState = {
-  cartItems: cartItemsFromStorage ? JSON.parse(cartItemsFromStorage) : [],
+  cartItems: cartItemsFromStorage,
   isError: false,
   isSuccess: false,
   isLoading: false,
   message: "",
+  shippingAddress: shippingAddressFromStorage,
+  paymentMethod: "paypal",
+  itemsPrice: 0,
+  shippingPrice: 0,
+  taxPrice: 0,
+  totalPrice: 0,
 };
 
 export const cartAddItems = createAsyncThunk(
@@ -32,8 +43,24 @@ export const cartRemoveItems = createAsyncThunk(
   "cartItems/CART_REMOVE_ITEM",
   async (id, thunkAPI) => {
     try {
-      console.log(id);
       return id;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const saveShippingAddress = createAsyncThunk(
+  "cartItems/SAVE_SHIPPING_ADDRESS",
+  async (data, thunkAPI) => {
+    try {
+      return data;
     } catch (error) {
       const message =
         (error.response &&
@@ -55,6 +82,27 @@ export const cartSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = false;
       state.message = "";
+    },
+    savePaymentMethod: (state, action) => {
+      state.paymentMethod = action.payload;
+    },
+    calItemPrice: (state) => {
+      state.itemsPrice = state.cartItems.reduce(
+        (acc, item) => acc + item.price * item.qty,
+        0
+      );
+    },
+    calShippingPrice: (state) => {
+      state.shippingPrice = state.itemsPrice > 100 ? 0 : 100;
+    },
+    calTaxPrice: (state) => {
+      state.taxPrice = Number((0.15 * state.itemsPrice).toFixed(2));
+    },
+    calTotalPrice: (state) => {
+      state.totalPrice =
+        Number(state.itemsPrice) +
+        Number(state.shippingPrice) +
+        Number(state.taxPrice);
     },
   },
   extraReducers: (builder) => {
@@ -108,11 +156,38 @@ export const cartSlice = createSlice({
       state.isError = true;
       state.message = action.payload;
     });
+
+    //Save Shipping Address
+    builder.addCase(saveShippingAddress.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(saveShippingAddress.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.shippingAddress = action.payload;
+      //need to remove this item from local storage also
+      localStorage.setItem(
+        "shippingAddress",
+        JSON.stringify(state.shippingAddress)
+      );
+    });
+    builder.addCase(saveShippingAddress.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+    });
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { reset, cartAddItem } = cartSlice.actions;
+export const {
+  reset,
+  calItemPrice,
+  calShippingPrice,
+  calTaxPrice,
+  calTotalPrice,
+  savePaymentMethod,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;
 

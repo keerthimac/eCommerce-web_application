@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, redirect, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FaSignInAlt } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { login, reset } from "../features/auth/authSlice";
 import Loader from "../components/Loader";
@@ -34,7 +33,6 @@ function Login() {
   );
   const redirect = location.search ? location.search.split("=")[1] : "/";
 
-  console.log(location.search);
   console.log(redirect);
 
   useEffect(() => {
@@ -62,9 +60,7 @@ function Login() {
 
   return (
     <FormContainer>
-      <h1>
-        <FaSignInAlt /> Sign In
-      </h1>
+      <h1>Sign In</h1>
       {isError && <Message variant="danger">{message}</Message>}
       <Form onSubmit={onSubmit}>
         <Form.Group className="mb-3" controlId="formBasicEmail">

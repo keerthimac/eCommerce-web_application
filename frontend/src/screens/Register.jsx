@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FaUser } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { register, reset } from "../features/auth/authSlice";
 import Loader from "../components/Loader";
@@ -15,6 +14,7 @@ import {
   Form,
 } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
+import Message from "../components/Message";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -28,6 +28,7 @@ function Register() {
 
   const dispatch = useDispatch(); //Initiate useDispatch Hook
   const navigate = useNavigate(); //Initiate useNavigate Hook
+  const location = useLocation(); //Initiate useLocation Hook
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     //This is initial state from authSlice.js
@@ -35,22 +36,23 @@ function Register() {
   );
 
   const redirect = location.search ? location.search.split("=")[1] : "/";
+
   console.log(redirect);
 
   useEffect(() => {
     if (isSuccess || user) {
       navigate(redirect);
     }
-    dispatch(reset()); // Dispatch use for bring functions from auth slice
-  }, [isSuccess, message, user, navigate, dispatch]);
+    dispatch(reset());
+  }, [isSuccess, user, navigate, dispatch, redirect]);
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const onSubmit = async (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
+      console.log("Passwords do not match");
     } else {
       const userData = {
         name,
@@ -61,122 +63,69 @@ function Register() {
     }
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   return (
     <FormContainer>
-      <h1>
-        <FaUser /> Register
-      </h1>
-      <p>Please create an account</p>
-
-      <Form onSubmit={onSubmit}>
-        <Form.Group className="mb-3" controlId="formBasicName">
+      <h1>Sign Up</h1>
+      {message && <Message variant="danger">{message}</Message>}
+      {isLoading && <Loader />}
+      <Form onSubmit={submitHandler}>
+        <Form.Group className="mb-3" controlId="name">
           <Form.Label>Name</Form.Label>
           <Form.Control
-            type="text"
+            type="name"
             name="name"
-            placeholder="Enter your name"
+            placeholder="Enter name"
             value={name}
             onChange={onChange}
-          />
+          ></Form.Control>
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
+        <Form.Group className="mb-3" controlId="email">
+          <Form.Label>Email Address</Form.Label>
           <Form.Control
             type="email"
             name="email"
             placeholder="Enter email"
             value={email}
             onChange={onChange}
-          />
+          ></Form.Control>
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicPassword">
+        <Form.Group className="mb-3" controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
             name="password"
+            placeholder="Enter password"
             value={password}
-            placeholder="Password"
             onChange={onChange}
-            required
-          />
+          ></Form.Control>
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
+        <Form.Group className="mb-3" controlId="confirmPassword">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
             type="password"
             name="confirmPassword"
+            placeholder="Confirm password"
             value={confirmPassword}
-            placeholder="confirm password"
             onChange={onChange}
-            required
-          />
+          ></Form.Control>
         </Form.Group>
 
-        <Button variant="primary" type="submit">
-          Sign In
+        <Button type="submit" variant="primary">
+          Register
         </Button>
       </Form>
 
-      {/* <section className="form">
-        <form onSubmit={onSubmit}>
-          <div className="form-group">
-            <input
-              type="text"
-              className="form-control"
-              id="name"
-              name="name"
-              value={name}
-              onChange={onChange}
-              placeholder="Enter your name"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              name="email"
-              value={email}
-              onChange={onChange}
-              placeholder="Enter your email"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="password"
-              className="form-control"
-              id="password"
-              name="password"
-              value={password}
-              onChange={onChange}
-              placeholder="Enter password"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="password"
-              className="form-control"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={onChange}
-              placeholder="Confirm password"
-              required
-            />
-          </div>
-          <button className="btn btn-block">Submit</button>
-        </form>
-      </section> */}
+      <Row className="py-3">
+        <Col>
+          Have an Account?{" "}
+          <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>
+            Login
+          </Link>
+        </Col>
+      </Row>
     </FormContainer>
   );
 }
